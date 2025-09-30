@@ -4,6 +4,7 @@ import os
 import subprocess
 import glob
 from termcolor import colored
+import nbformat
 
 testRun = False
 
@@ -11,7 +12,7 @@ result = subprocess.run(["git", "branch","--show-current"], text=True, capture_o
 branch_name = result.stdout
 branch_name = branch_name.rstrip("\n")
 
-print(colored("Commiting curent changes to solution branch.","blue"))
+print(colored(f"Commiting curent changes to solution branch {branch_name}.","blue"))
 if not testRun:
     subprocess.run(["git", "commit","-a", "-m automatic commit"])
 
@@ -23,16 +24,37 @@ print(colored("Removing solutions blocks.","blue"))
 
 result = subprocess.run(["git","diff","--name-only", branch_name, students_branch_name], text=True, capture_output=True)
 fileList = result.stdout.rstrip("\n").split("\n")
+print(result, fileList)
+
+
+def strip_solutions(input_file, output_file):
+    nb = nbformat.read(input_file, as_version=4)
+    for cell in nb.cells:
+        if cell.cell_type == "code":
+            new_source = []
+            p = False
+            for line in cell.source.splitlines(keepends=True):
+                if "#BEGIN_SOLUTION" in line:
+                    p = True
+                    new_source.append("...\n")  # placeholder
+                    continue
+                if "#END_SOLUTION" in line:
+                    p = False
+                    continue
+                if not p:
+                    new_source.append(line)
+            cell.source = "".join(new_source)
+    nbformat.write(nb, output_file)
 
 for aFile_name in fileList:
     if aFile_name.find("README")!=-1 or  aFile_name.find("makeStudentsVersion.py")!=-1:
         continue
+    print(colored(f"Processing file {aFile_name}","green"))
     input_file_name = aFile_name
-    output_file = open("tmp.ipynb", "w")
+    # output_file = open("tmp.ipynb", "w")
     subprocess.run(["git","restore", "--source",branch_name,"--",aFile_name], text=True, capture_output=True)
     result = subprocess.run(["git","add",aFile_name], text=True, capture_output=True)
-    result = subprocess.run(["awk", " /#BEGIN_SOLUTION/{p=1}/#END_SOLUTION/{p=0;print \"    \\\"...\\\\n\\\", \";next}!p", input_file_name],
-                            text=True, stdout=output_file)
+    strip_solutions(input_file_name, "tmp.ipynb")
     if not testRun:
         subprocess.run(["mv","tmp.ipynb",input_file_name])
     
