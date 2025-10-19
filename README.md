@@ -1,4 +1,4 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mpoziomska/Uczenie_maszynowe/blob/2025_2026)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mpoziomska/Uczenie_maszynowe/blob/2025_2026_solutions)
 
 
 # Uczenie maszynowe - wersja dla uczestników.
