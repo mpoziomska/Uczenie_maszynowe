@@ -25,7 +25,7 @@ print(colored("Removing solutions blocks.","blue"))
 result = subprocess.run(["git","diff","--name-only", branch_name, students_branch_name], text=True, capture_output=True)
 fileList = result.stdout.rstrip("\n").split("\n")
 print(result, fileList)
-fileList = ['03_Regresja_logistyczna.ipynb']
+fileList = ['04_Miary_jakosci.ipynb']
 
 def strip_solutions(input_file, output_file):
     nb = nbformat.read(input_file, as_version=4)
