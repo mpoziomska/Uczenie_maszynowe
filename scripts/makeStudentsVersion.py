@@ -25,7 +25,7 @@ print(colored("Removing solutions blocks.","blue"))
 result = subprocess.run(["git","diff","--name-only", branch_name, students_branch_name], text=True, capture_output=True)
 fileList = result.stdout.rstrip("\n").split("\n")
 print(result, fileList)
-fileList = ['07_Klasyfikator_Bayesa_spam.ipynb']
+fileList = ['08_Drzewa_decyzyjne.ipynb', '09_Drzewa_decyzyjne.ipynb']
 
 def strip_solutions(input_file, output_file):
     nb = nbformat.read(input_file, as_version=4)
